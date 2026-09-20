@@ -27,7 +27,8 @@ ledger:l.data.map(x=>({id:x.id,projectId:x.project_id,batchId:x.batch_id,shipmen
 async function insert(table,row){if(!sb)return null;const {data,error}=await sb.from(table).insert(row).select().single();if(error)throw error;return data}
 async function update(table,id,row){if(!sb)return null;const {error}=await sb.from(table).update(row).eq("id",id);if(error)throw error}
 async function insertMany(table,rows){if(!sb||!rows.length)return [];const {data,error}=await sb.from(table).insert(rows).select();if(error)throw error;return data}
+async function adjustStock(batchId,delta,reason){if(!sb)throw new Error("Cloud unavailable");const {data,error}=await sb.rpc("adjust_stock",{p_batch:batchId,p_delta:delta,p_reason:reason});if(error)throw error;return data}
 async function transactionShipment(payload){if(!sb)throw new Error("Cloud unavailable");const {data,error}=await sb.rpc("record_shipment_atomic",{p_project:payload.project_id,p_base:payload.base_qty,p_activator:payload.activator_qty,p_date:payload.shipment_date,p_notes:payload.notes||"",p_reference:payload.reference||null});if(error)throw error;return data}
 function watch(cb){if(!sb||channel)return;channel=sb.channel("nuvo-live").on("postgres_changes",{event:"*",schema:"public"},()=>cb&&cb()).subscribe()}
-return{configured,init,signIn,signUp,signOut,profile,pendingUsers,approveUser,load,insert,insertMany,update,transactionShipment,watch,get user(){return user}}
+return{configured,init,signIn,signUp,signOut,profile,pendingUsers,approveUser,load,insert,insertMany,update,adjustStock,transactionShipment,watch,get user(){return user}}
 })();
