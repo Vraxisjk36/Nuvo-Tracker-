@@ -3,6 +3,10 @@ let sb=null,user=null,channel=null;
 function configured(){const c=window.NUVO_CONFIG||{};return !!(c.supabaseUrl&&c.supabaseAnonKey&&window.supabase)}
 async function init(onChange){if(!configured())return {mode:"local"};sb=window.supabase.createClient(NUVO_CONFIG.supabaseUrl,NUVO_CONFIG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data}=await sb.auth.getSession();user=data.session?.user||null;sb.auth.onAuthStateChange((_e,s)=>{user=s?.user||null;onChange&&onChange({auth:true,user})});return {mode:"cloud",user}}
 async function signIn(email,password){return sb.auth.signInWithPassword({email,password})}
+async function signUp(name,email,password){return sb.auth.signUp({email,password,options:{data:{display_name:name}}})}
+async function profile(){if(!sb||!user)return null;const {data,error}=await sb.from("profiles").select("*").eq("id",user.id).single();if(error)throw error;return data}
+async function pendingUsers(){if(!sb)return [];const {data,error}=await sb.from("profiles").select("*").eq("approved",false).order("created_at");if(error)throw error;return data}
+async function approveUser(id,role){if(!sb)return;const {error}=await sb.from("profiles").update({approved:true,role:role||"production"}).eq("id",id);if(error)throw error}
 async function signOut(){return sb.auth.signOut()}
 async function load(){if(!sb||!user)return null;const [p,b,s,n,t,a]=await Promise.all([
 sb.from("projects").select("*").order("due"),
@@ -23,5 +27,5 @@ async function update(table,id,row){if(!sb)return null;const {error}=await sb.fr
 async function insertMany(table,rows){if(!sb||!rows.length)return [];const {data,error}=await sb.from(table).insert(rows).select();if(error)throw error;return data}
 async function transactionShipment(payload,batchUpdates){const s=await insert("shipments",payload);for(const b of batchUpdates)await update("batches",b.id,{allocated:b.allocated});return s}
 function watch(cb){if(!sb||channel)return;channel=sb.channel("nuvo-live").on("postgres_changes",{event:"*",schema:"public"},()=>cb&&cb()).subscribe()}
-return{configured,init,signIn,signOut,load,insert,insertMany,update,transactionShipment,watch,get user(){return user}}
+return{configured,init,signIn,signUp,signOut,profile,pendingUsers,approveUser,load,insert,insertMany,update,transactionShipment,watch,get user(){return user}}
 })();
