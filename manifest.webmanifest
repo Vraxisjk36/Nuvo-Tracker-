@@ -1,0 +1,9 @@
+{
+  "name": "Nuvo Production Tracker",
+  "short_name": "Nuvo",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "description": "Mobile-first epoxy production, batch, inventory and shipment tracker."
+}
