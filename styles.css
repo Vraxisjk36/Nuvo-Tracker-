@@ -4,3 +4,5 @@
 .auth-page{min-height:100dvh;display:grid;place-items:center;padding:24px}.auth-card{width:min(100%,440px);background:var(--card);border:1px solid var(--line);border-radius:28px;padding:26px;box-shadow:0 30px 80px #0007}.auth-card h1{font-size:30px;margin:20px 0 6px}.auth-card .field{margin-top:16px}.auth-error{min-height:20px;color:#ff8b8b;font-size:13px;margin:10px 0}.btn.full{width:100%;margin-top:6px}.btn:disabled{opacity:.55;pointer-events:none}
 
 .auth-switch{display:block;width:100%;border:0;background:transparent;color:var(--muted);padding:18px 8px 4px;font:inherit}.auth-card.center{text-align:center}.waiting-icon{font-size:42px;margin-bottom:12px;animation:nuvoWait 2s ease-in-out infinite}@keyframes nuvoWait{50%{transform:translateY(-5px);opacity:.65}}
+
+.attention{margin:18px 0}.attention .notice{margin:8px 0}.notice.green{border-color:rgba(88,190,120,.35)}.notice.due{border-color:rgba(247,187,66,.38)}.notice.red{border-color:rgba(235,90,90,.42)}
