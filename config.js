@@ -1,4 +1,4 @@
 window.NUVO_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseUrl: "https://lnwpianopctnvpyunkpk.supabase.co",
+  supabaseAnonKey: "sb_publishable_NAfqjUdJ6miTJgEfBmG8Sg_vEwA4Egx"
 };
