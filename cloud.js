@@ -20,6 +20,8 @@ targetHistory:t.data.map(x=>({id:x.id,projectId:x.project_id,from:x.old_target,t
 activity:a.data.map(x=>({id:x.id,projectId:x.project_id,text:x.event,date:x.created_at})),_ledgerMigrated:true}}
 async function insert(table,row){if(!sb)return null;const {data,error}=await sb.from(table).insert(row).select().single();if(error)throw error;return data}
 async function update(table,id,row){if(!sb)return null;const {error}=await sb.from(table).update(row).eq("id",id);if(error)throw error}
+async function insertMany(table,rows){if(!sb||!rows.length)return [];const {data,error}=await sb.from(table).insert(rows).select();if(error)throw error;return data}
+async function transactionShipment(payload,batchUpdates){const s=await insert("shipments",payload);for(const b of batchUpdates)await update("batches",b.id,{allocated:b.allocated});return s}
 function watch(cb){if(!sb||channel)return;channel=sb.channel("nuvo-live").on("postgres_changes",{event:"*",schema:"public"},()=>cb&&cb()).subscribe()}
-return{configured,init,signIn,signOut,load,insert,update,watch,get user(){return user}}
+return{configured,init,signIn,signOut,load,insert,insertMany,update,transactionShipment,watch,get user(){return user}}
 })();
